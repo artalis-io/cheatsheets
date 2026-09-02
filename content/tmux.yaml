@@ -1,0 +1,102 @@
+id: tmux
+title: tmux Cheat Sheet
+subtitle: Persistent terminal sessions
+version: "1.0"
+updated: "2026-09-02"
+category: terminal
+tags: [tmux, shell, operations]
+intro: Keep interactive work alive across terminal and SSH disconnects. Prefix means press Ctrl-b, release, then press the next key.
+footer: tmux · start long-running work inside a named session
+sections:
+  - title: Sessions
+    blocks:
+      - type: entries
+        items:
+          - {command: "tmux new -s NAME", description: "Create and attach to a named session."}
+          - {command: "tmux ls", description: "List sessions and their window counts."}
+          - {command: "tmux attach -t NAME", description: "Attach to an existing session."}
+          - {command: "tmux attach -d -t NAME", description: "Detach other clients, then attach here."}
+          - {command: "Prefix $", description: "Rename the current session."}
+          - {command: "tmux kill-session -t NAME", description: "Terminate one session and its processes."}
+      - type: note
+        kind: tip
+        text: "Use project-purpose names: hull-codex, keel-codex, qwen-server."
+  - title: Persistence & mental model
+    blocks:
+      - type: note
+        kind: info
+        text: "terminal window != tmux session"
+      - type: entries
+        items:
+          - {command: "Prefix d", description: "Detach; jobs continue inside tmux."}
+          - {command: "SSH/terminal closes", description: "The tmux server and its processes survive."}
+          - {command: "Host reboots", description: "Sessions do not survive unless separately restored."}
+  - title: Windows
+    blocks:
+      - type: entries
+        items:
+          - {command: "Prefix c", description: "Create a window."}
+          - {command: "Prefix n / p", description: "Next / previous window."}
+          - {command: "Prefix 0…9", description: "Select a window by index."}
+          - {command: "Prefix ,", description: "Rename the current window."}
+          - {command: "Prefix &", description: "Kill the current window (confirm)."}
+          - {command: "Prefix w", description: "Choose from sessions and windows."}
+  - title: Panes
+    blocks:
+      - type: entries
+        items:
+          - {command: "Prefix %", description: "Split left/right."}
+          - {command: "Prefix \"", description: "Split top/bottom."}
+          - {command: "Prefix arrow", description: "Move focus between panes."}
+          - {command: "Prefix z", description: "Toggle pane zoom."}
+          - {command: "Prefix x", description: "Kill the active pane (confirm)."}
+          - {command: "Prefix { / }", description: "Swap pane with previous / next."}
+  - title: Copy & scroll mode
+    blocks:
+      - type: entries
+        items:
+          - {command: "Prefix [", description: "Enter copy mode; arrows/Page Up scroll."}
+          - {command: "q", description: "Leave copy mode."}
+          - {command: "Space … Enter", description: "Select and copy in vi copy mode."}
+          - {command: "Prefix ]", description: "Paste the latest tmux buffer."}
+      - type: text
+        text: "Mouse scrolling depends on `set -g mouse on`; copy keys depend on mode-keys."
+  - title: Command prompt actions
+    blocks:
+      - type: entries
+        items:
+          - {command: "Prefix :", description: "Open the tmux command prompt."}
+          - {command: "list-panes", description: "Inspect panes in the current window."}
+          - {command: "list-windows", description: "Inspect windows in the session."}
+          - {command: "source-file ~/.tmux.conf", description: "Reload configuration."}
+          - {command: "set -g mouse on", description: "Enable mouse support for this server."}
+  - title: Long-running Codex workflow
+    blocks:
+      - type: code
+        text: |-
+          tmux new -s project-codex
+          codex
+          # Prefix d
+          tmux attach -t project-codex
+      - type: text
+        text: "Start tmux first, run Codex, detach safely, then reattach from any terminal."
+  - title: Rescue an existing process
+    blocks:
+      - type: entries
+        items:
+          - {command: "reptyr PID", description: "Move a process to the current terminal."}
+          - {command: "reptyr -T PID", description: "Steal the process's controlling terminal group."}
+      - type: note
+        kind: warning
+        text: "Rescue surgery: permissions, ptrace policy and process state can prevent it. Starting inside tmux is safer."
+  - title: Diagnostics
+    blocks:
+      - type: entries
+        items:
+          - {command: "tmux ls", description: "Show whether the tmux server has sessions."}
+          - {command: "echo $TMUX", description: "Non-empty when this shell is inside tmux."}
+          - {command: "tmux display -p '#S'", description: "Print current session name."}
+          - {command: "tmux list-windows -a", description: "List every window."}
+          - {command: "tmux list-panes -a -F '#S:#I.#P #{pane_tty}'", description: "Map panes to TTYs."}
+          - {command: "ps -o pid,ppid,tty,stat,cmd -p PID", description: "Inspect process ownership and TTY."}
+

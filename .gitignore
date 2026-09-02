@@ -1,0 +1,6 @@
+dist/
+generated/
+__pycache__/
+*.pyc
+.venv/
+

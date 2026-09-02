@@ -1,0 +1,94 @@
+id: llama-cpp-build
+title: llama.cpp Build + Install
+subtitle: Reproducible Linux / CUDA workflow
+version: "1.0"
+updated: "2026-09-02"
+verified_on:
+  date: "2026-09-02"
+  software: llama.cpp master
+  host: core-1
+category: inference
+tags: [llama.cpp, CUDA, CMake, Linux]
+intro: A clean update, configure, build, install and smoke-test loop. Adjust paths and parallelism to the host.
+footer: llama.cpp build · verify current upstream options before automation
+sections:
+  - title: Update safely
+    blocks:
+      - type: code
+        text: |-
+          git status --short
+          git fetch origin
+          git switch master
+          git pull --ff-only
+      - type: note
+        kind: warning
+        text: "Do not clean or switch over uncommitted work. Resolve a dirty tree deliberately."
+  - title: CUDA environment
+    blocks:
+      - type: code
+        text: |-
+          export CUDA_HOME=/usr/local/cuda
+          export CUDACXX="$CUDA_HOME/bin/nvcc"
+          export PATH="$CUDA_HOME/bin:$PATH"
+          export LD_LIBRARY_PATH="$CUDA_HOME/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          nvcc --version
+      - type: text
+        text: "Prefer explicit toolkit paths on machines with multiple CUDA installations."
+  - title: Clean configure
+    blocks:
+      - type: code
+        text: |-
+          cmake -S . -B build \
+            -DGGML_CUDA=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CUDA_COMPILER="$CUDACXX"
+      - type: entries
+        items:
+          - {command: "cmake -S . -B build", description: "Keep generated state outside the source tree."}
+          - {command: "-DGGML_CUDA=ON", description: "Build the CUDA backend."}
+          - {command: "-DCMAKE_BUILD_TYPE=Release", description: "Enable optimized single-config output."}
+  - title: Build, install, verify
+    blocks:
+      - type: code
+        text: |-
+          cmake --build build --config Release -j "$(nproc)"
+          sudo cmake --install build
+          sudo ldconfig
+          llama-cli --version
+          llama-server --version
+      - type: note
+        kind: tip
+        text: "Installation mutates system paths. For development, running build/bin/llama-cli directly is often clearer."
+  - title: Repeatable update workflow
+    blocks:
+      - type: entries
+        items:
+          - {command: "git status --short", description: "Confirm local work is understood."}
+          - {command: "git fetch; git switch master", description: "Refresh refs and select the tracked branch."}
+          - {command: "git pull --ff-only", description: "Refuse an implicit merge."}
+          - {command: "rm -rf build", description: "Only when a verified stale cache requires a clean rebuild."}
+          - {command: "cmake … && cmake --build …", description: "Configure and compile with explicit CUDA settings."}
+          - {command: "sudo cmake --install build", description: "Install only after a successful build/test."}
+  - title: Common failures
+    blocks:
+      - type: table
+        headers: [Symptom, Check, Remedy]
+        rows:
+          - ["No CMAKE_CUDA_COMPILER", "echo $CUDACXX", "Point it at the intended nvcc before configure."]
+          - ["nvcc: not found", "command -v nvcc", "Fix CUDA_HOME/PATH; confirm toolkit installed."]
+          - ["Old options/toolkit retained", "CMakeCache.txt", "Remove only the build directory; reconfigure."]
+          - ["Compile/link runtime errors", "nvcc and driver versions", "Check toolkit, driver and runtime compatibility."]
+          - ["Unexpected binary/version", "command -v llama-cli", "Use build/bin directly or correct install PATH."]
+  - title: Clean rebuild strategy
+    blocks:
+      - type: code
+        text: |-
+          rm -rf build                 # verify target first
+          cmake -S . -B build -DGGML_CUDA=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CUDA_COMPILER="$CUDACXX"
+          cmake --build build --config Release -j "$(nproc)"
+      - type: note
+        kind: warning
+        text: "A clean rebuild fixes stale generated state, not incompatible drivers, missing headers or bad source changes. Read the first compiler error."
+

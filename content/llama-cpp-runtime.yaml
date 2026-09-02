@@ -1,0 +1,103 @@
+id: llama-cpp-runtime
+title: llama.cpp Inference + Tuning
+subtitle: Runtime flags, placement and benchmark profiles
+version: "1.0"
+updated: "2026-09-02"
+verified_on:
+  date: "2026-09-02"
+  software: llama.cpp master
+  host: core-1
+category: inference
+tags: [llama.cpp, CUDA, performance, long-context]
+intro: CLI flags change quickly. Confirm support with the exact binary's --help, then benchmark quality, memory and throughput on the target model and hardware.
+footer: llama.cpp runtime · examples are starting points, not universal prescriptions
+sections:
+  - title: Model & GPU placement
+    blocks:
+      - type: entries
+        items:
+          - {command: "-m MODEL.gguf", description: "Load a GGUF model."}
+          - {command: "-ngl N", description: "Offload N model layers to GPU; use a large value for all supported layers."}
+          - {command: "--fit on|off", description: "Enable or disable automatic fitting of model/context to device memory."}
+          - {command: "CUDA_VISIBLE_DEVICES=0,1", description: "Restrict and order visible CUDA devices before launch."}
+  - title: Context & batching
+    blocks:
+      - type: entries
+        items:
+          - {command: "-c N", description: "Context size in tokens; KV memory grows with context."}
+          - {command: "-b N", description: "Logical prompt batch size; larger can improve prompt processing."}
+          - {command: "-ub N", description: "Physical micro-batch size; tune for memory and kernel efficiency."}
+      - type: note
+        kind: tip
+        text: "Increase one dimension at a time and record peak VRAM, prompt processing (PP) and token generation (TG)."
+  - title: KV cache
+    blocks:
+      - type: entries
+        items:
+          - {command: "-ctk f16 -ctv f16", description: "FP16 key/value cache: larger, conservative baseline."}
+          - {command: "-ctk q8_0 -ctv q8_0", description: "Q8 KV: substantially lower memory with model/workload-dependent quality and speed tradeoffs."}
+      - type: text
+        text: "KV choice becomes decisive at very long context. Validate output quality as well as whether the model fits."
+  - title: Attention & multi-GPU
+    blocks:
+      - type: entries
+        items:
+          - {command: "-fa on", description: "Enable flash attention when supported by the build/model/backend."}
+          - {command: "-sm layer", description: "Split model layers across GPUs."}
+          - {command: "-ts 0.5,0.5", description: "Request an even tensor/layer split across two visible GPUs."}
+      - type: note
+        kind: warning
+        text: "Tensor split behavior and tensor mode support are architecture-, model- and runtime-dependent. Inspect logs and measure actual placement."
+  - title: Tensor placement overrides
+    blocks:
+      - type: entries
+        items:
+          - {command: "-ot PATTERN=DEVICE", description: "Override placement for tensors matching a runtime-supported pattern."}
+          - {command: "-ot '.*(ple|ngram).*'=CPU", description: "Conceptual example: keep PLE/n-gram embedding tensors in system RAM."}
+      - type: note
+        kind: warning
+        text: "Tensor names and -ot syntax evolve. Use --help and startup tensor-placement logs from the exact build; do not copy patterns blindly."
+  - title: Speculative decoding / MTP
+    blocks:
+      - type: entries
+        items:
+          - {command: "-md DRAFT.gguf", description: "Load an external draft model where supported."}
+          - {command: "--n-gpu-layers-draft N", description: "Choose draft-model GPU offload."}
+          - {command: "--spec-type draft-mtp", description: "Select multi-token prediction drafting."}
+          - {command: "--spec-draft-n-max N", description: "Cap drafted tokens per speculative step."}
+      - type: text
+        text: "Acceptance rate, draft cost and target verification determine the gain. More drafted tokens are not automatically faster."
+  - title: Example · Qwen3.8 Flash-Next
+    blocks:
+      - type: table
+        headers: [Setting, Measured profile]
+        rows:
+          - [GPU, "1× RTX PRO 6000"]
+          - [Context, "512K"]
+          - [Placement, "PLE/n-gram → CPU RAM"]
+          - [KV / MTP, "Q8 KV / MTP3"]
+          - [Batch, "-b 512 -ub 256"]
+          - [Observed, "PP ≈199 tok/s · TG ≈118 tok/s"]
+      - type: note
+        kind: warning
+        text: "Machine-specific measurement on the verified host/build—not a universal expectation. Prompt shape, sampling, thermals and build revision matter."
+  - title: Example · long context
+    blocks:
+      - type: table
+        headers: [Setting, Starting point]
+        rows:
+          - [GPUs, "2 visible GPUs"]
+          - [Context, "1M tokens"]
+          - [Split, "-sm layer -ts 0.5,0.5"]
+          - [Placement, "PLE → CPU RAM"]
+          - [KV, "FP16 key + value"]
+      - type: text
+        text: "Capacity does not imply good throughput. Re-benchmark every model, quantization, context target and hardware topology."
+  - title: Measurement loop
+    blocks:
+      - type: entries
+        items:
+          - {command: "llama-cli --help | less", description: "Confirm current names, defaults and accepted values."}
+          - {command: "nvidia-smi", description: "Observe utilization, memory, power and device visibility."}
+          - {command: "Change one variable", description: "Keep prompt, seed and measurement window comparable."}
+          - {command: "Record PP / TG / VRAM", description: "Separate ingestion speed, generation speed and capacity."}
