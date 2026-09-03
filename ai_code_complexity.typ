@@ -1,35 +1,19 @@
-#set page(paper: "a4", margin: (x: 17mm, top: 16mm, bottom: 17mm), numbering: "1")
-#set text(font: "Libertinus Serif", size: 9.7pt, lang: "en")
+#import "@preview/charged-ieee:0.1.4": ieee
+
 #set smartquote(enabled: false)
-#set par(justify: true, leading: 0.56em, spacing: 0.48em)
-#set heading(numbering: "1.", outlined: false)
-#show heading.where(level: 1): it => block(above: 7pt, below: 2.5pt, breakable: false)[
-  #set text(size: 10.2pt, weight: "bold"); #it
-]
-#show heading.where(level: 2): it => block(above: 5pt, below: 1.8pt, breakable: false)[
-  #set text(size: 9.4pt, weight: "bold"); #it
-]
 #show link: set text(fill: rgb("174b72"))
-
-#align(center)[
-  #text(size: 17pt, weight: "bold")[Local Decidability as a Condition for\
-  Scalable Agentic Coding]
-  #v(4pt)
-  #text(size: 10.5pt, weight: "bold")[Mark Farkas]
-  #linebreak()
-  #text(size: 9pt, style: "italic")[artalis.io]
-]
-
-#v(7pt)
-#block(inset: (x: 9mm), breakable: false)[
-  #text(weight: "bold")[Abstract.] In projects examined here, coding agents increased implementation throughput, but code production was only one constraint on system quality. Four cases cover a networking substrate, a converging capability-secure runtime, an implemented inference engine and proposed successor architecture, and an experimental LP and MIP solver. The cases are consistent with the hypothesis that agentic coding scales when architecture converts system-level obligations into locally decidable tasks whose results are observable and compositionally meaningful. The engineering value of agent assistance varies with reasoning scope, invariants, feedback, coupling, and review burden. Architectural judgment defines boundaries and validation regimes, but expert attention is limited and cannot replace empirical evidence. Agent assistance amplifies its architecture and feedback regime; implementation throughput does not reduce the cost of managing complexity.
-
-  #v(2pt)
-  #text(weight: "bold")[Keywords:] Local decidability, agentic coding, AI-assisted programming, systems engineering, software architecture, compositional correctness, system-level validation
-]
-
-#v(4pt)
-#columns(2, gutter: 6mm)[
+#show: ieee.with(
+  title: [Local Decidability as a Condition for Scalable Agentic Coding],
+  authors: (
+    (
+      name: "Mark Farkas",
+      organization: [artalis.io],
+    ),
+  ),
+  abstract: [In projects examined here, coding agents increased implementation throughput, but code production was only one constraint on system quality. Four cases cover a networking substrate, a converging capability-secure runtime, an implemented inference engine and proposed successor architecture, and an experimental LP and MIP solver. The cases are consistent with the hypothesis that agentic coding scales when architecture converts system-level obligations into locally decidable tasks whose results are observable and compositionally meaningful. The practical dividing line is not whether agents can implement components, but whether component-level correctness composes into observable whole-system quality. The engineering value of agent assistance varies with reasoning scope, invariants, feedback, coupling, and review burden. Architectural judgment defines boundaries and validation regimes, but expert attention is limited and cannot replace empirical evidence. Agent assistance amplifies its architecture and feedback regime; implementation throughput does not reduce the cost of managing complexity.],
+  index-terms: ([Local decidability], [agentic coding], [AI-assisted programming], [systems engineering], [software architecture], [compositional correctness], [system-level validation]),
+  paper-size: "a4",
+)
 
 = Introduction
 
@@ -51,13 +35,19 @@ The argument draws on four projects. Keel is a portable asynchronous networking 
 
 To compare these differences, the paper introduces a qualitative scale of engineering complexity based on reasoning scope, coupling, compositionality, feedback quality, and interaction growth.
 
-These longitudinal practitioner cases are not controlled experiments. They differ in domain, maturity, success criteria, model generation, and available feedback, and no counterfactual implementations without coding agents exist. The paper therefore does not estimate the causal effect of agent use. It develops a systems-engineering hypothesis from observed contrasts and derives implications that can be tested in future comparative studies.
+Existing evaluations measure repository-level task completion and autonomous task horizons, but do not directly characterize when locally correct changes compose into system-level quality [11, 12].
+
+Recent work examines runtime-structured task decomposition and benchmarks model performance on software-architecture tasks [13, 14]; this paper instead asks when system architecture makes agent-produced changes locally assessable and predictive of whole-system quality. Recent audits also report increased coupling and structural degradation in agent-generated systems [15]; the present framework interprets such degradation as especially consequential when local changes are weakly observable or non-compositional.
+
+This paper proposes local decidability as the central explanatory variable linking increased agent-assisted implementation throughput to scalable engineering throughput.
+
+These longitudinal practitioner cases are not controlled experiments. They differ in domain, maturity, success criteria, model generation, and available feedback, and no counterfactual implementations without coding agents exist. The evidence consists of repository structure, normative contracts, executable tests, and dated benchmark records; cross-case conclusions are qualitative and do not compare model productivity quantitatively. The paper therefore does not estimate the causal effect of agent use. It develops a systems-engineering hypothesis from observed contrasts and derives implications that can be tested in future comparative studies.
 
 = Analytical framework
 
 System quality is not proportional to code volume. The relevant question is when increased agent-assisted implementation throughput creates engineering value. As an analytical lens, the engineering value of agent assistance tends to increase with implementation throughput, local decidability, and observability, and to decrease with cross-component coupling and review burden. These factors interact and are not assumed to be independent; the relation is a qualitative dependency statement, not a mathematical model. Domain knowledge, available engineering time, problem difficulty, project maturity, oracle quality, and computational budget also affect outcomes.
 
-A further hypothesis concerns scale. When agent-generated systems grow without deliberate decomposition and expert architectural guidance, cross-component assumptions and review burden can grow faster than enforceable invariants and observable evidence. Implementation throughput then creates verification debt faster than it can be retired, eventually imposing a practical limit on reliable progress.
+A further hypothesis concerns scale. When agent-generated systems grow without deliberate decomposition and expert architectural guidance, cross-component assumptions and review burden can grow faster than enforceable invariants and observable evidence. The resulting gap creates verification debt: accumulated assurance work produced when changes and dependencies arrive faster than contracts, tests, and representative evidence can validate them. Beyond some scale, this debt imposes a practical limit on reliable progress.
 
 == Local decidability and decomposition
 
@@ -83,30 +73,29 @@ System-level feedback is informative when it is timely, attributable, representa
 
 Observability can be improved through trusted reference implementations, differential testing, representative benchmark suites, sanitizer and property checks, deterministic traces, performance gates, and explicit failure taxonomies. Feedback density also matters: short causal loops make it easier to associate a change with its consequences. Delayed or noisy feedback encourages optimization against incomplete or misleading proxies.
 
-]
-
 == Engineering complexity regimes
 
-The following scale classifies engineering complexity by the scope of evidence required to assess a change, not by source-code volume or computational complexity. Its defining attributes are reasoning scope, cross-component coupling, compositionality of local guarantees, oracle quality, and growth of interactions as features are added. The regimes are analytical categories rather than fixed properties: architecture can move a project toward or away from local decidability, although it cannot remove difficulty intrinsic to the domain.
+The following scale classifies engineering complexity by the scope of evidence required to assess a change, not by source-code volume or computational complexity. Its defining attributes are reasoning scope, cross-component coupling, compositionality of local guarantees, oracle quality, and growth of interactions as features are added. The regimes are analytical categories rather than fixed properties: architecture can move a project toward or away from local decidability, although it cannot remove difficulty intrinsic to the domain. The scale predicts differences in the conditions under which additional implementation throughput yields engineering value; it does not rank projects by importance, source-code size, or absolute difficulty.
 
-#set table(stroke: 0.35pt + rgb("999999"), inset: 3pt)
-#block(breakable: false)[#text(size: 8.2pt)[#table(
+#set table(stroke: 0.35pt + rgb("999999"), inset: (x: 2.5pt, y: 2.2pt))
+#place(top, scope: "parent", float: true, clearance: 12pt)[#figure(
+  text(size: 7.8pt, table(
   columns: (15%, 26%, 20%, 23%, 16%),
   align: (left, left, left, left, left),
-  table.header([#strong[Regime]], [#strong[Defining attributes]], [#strong[Typical agent value]], [#strong[Best expert complement]], [#strong[Cases]]),
-  [0. Reproduced microtask], [Familiar pattern, tiny state space, negligible coupling, immediate oracle.], [High apparent implementation speed; weak evidence of systems capability.], [General software engineer or technically competent domain user; low incremental expert demand.], [TODO and isolated coding demonstrations.],
-  [1. Bounded conventional application], [Established framework boundaries, modest state, direct acceptance tests, attributable failures.], [High throughput with bounded review and integration effort.], [Product-oriented domain engineer with framework and operations experience.], [Simple CRUD or web applications.],
-  [2. Contract-compositional system], [Explicit semantic boundaries and enforceable invariants; local conformance predicts substantial system behavior.], [Very high when expert architecture creates stable, bounded obligations.], [Systems architect with domain, concurrency, lifecycle, and platform expertise.], [Keel, Hull.],
-  [3. Matrix-coupled system], [Individually tractable dimensions form a large support and validation cross-product.], [High within one matrix cell; lower and more costly across integrations.], [Performance systems engineer with numerical, hardware, and model-format expertise.], [Sail.],
-  [4. Emergent-outcome system], [Local validity weakly predicts global quality; feedback is delayed, noisy, and distribution-dependent.], [Useful for implementation and experiments; throughput weakly predicts quality.], [Operations-research or numerical-optimization expert skilled in experimental design.], [Ralph.],
-  [5. Open-world socio-technical system], [Outcomes depend on changing environments, adversaries, operators, institutions, and rare interactions.], [Conditional and component-specific; implementation throughput cannot provide complete assurance.], [Multidisciplinary teams spanning architecture, safety, security, operations, human factors, and regulation.], [Autonomous transport, air-traffic management, global cloud control planes, critical infrastructure.]
-)]]
+  table.header([#strong[Regime]], [#strong[Defining attributes]], [#strong[Typical agent value]], [#strong[Expert value and best complement]], [#strong[Cases]]),
+  [0. Reproduced microtask], [Familiar pattern, tiny state space, negligible coupling, immediate oracle.], [High apparent implementation speed; weak evidence of systems capability.], [Low incremental value. General software engineer or technically competent domain user.], [TODO and isolated coding demonstrations.],
+  [1. Bounded conventional application], [Established framework boundaries, modest state, direct acceptance tests, attributable failures.], [High throughput with bounded review and integration effort.], [Moderate value. Product-oriented domain engineer with framework and operations experience.], [Simple CRUD or web applications.],
+  [2. Contract-compositional system], [Explicit semantic boundaries and enforceable invariants; local conformance predicts substantial system behavior.], [Very high when expert architecture creates stable, bounded obligations.], [High, strongly leveraged value. Systems architect with domain, concurrency, lifecycle, and platform expertise.], [Keel, Hull.],
+  [3. Matrix-coupled system], [Individually tractable dimensions form a large support and validation cross-product.], [High within one matrix cell; lower and more costly across integrations.], [Very high value. Performance systems engineer with numerical, hardware, and model-format expertise.], [Sail.],
+  [4. Emergent-outcome system], [Local validity weakly predicts global quality; feedback is delayed, noisy, and distribution-dependent.], [Useful for implementation and experiments; throughput weakly predicts quality.], [Indispensable but bounded value. Operations-research or numerical-optimization expert skilled in experimental design.], [Ralph.],
+  [5. Open-world socio-technical system], [Outcomes depend on changing environments, adversaries, operators, institutions, and rare interactions.], [Conditional and component-specific; implementation throughput cannot provide complete assurance.], [Collective and continuous value. Multidisciplinary teams spanning architecture, safety, security, operations, human factors, and regulation.], [Autonomous transport, air-traffic management, global cloud control planes, critical infrastructure.]
+)),
+  caption: [Engineering complexity regimes.],
+)]
 
 The first two regimes are analytical baselines and are outside this study. Reproduced microtasks exercise familiar patterns with immediate oracles, while bounded applications largely require finite specification and integration effort from a domain engineer. Repository-level benchmarks and task-horizon studies likewise distinguish bounded issue resolution from longer, messier work, where success decreases as coordination and context grow [11, 12]. Such tasks are poor tests of the present hypothesis because their reasoning scope, coupling, and validation cost are limited by construction.
 
 Expert value changes form across the scale. At lower regimes it consists mainly of specification and acceptance. In contract-compositional systems, expertise creates the boundaries that make agent assistance scalable. In matrix-coupled and emergent systems, experts must also constrain interaction growth and design representative evidence, yet their judgment cannot reliably predict every system-level outcome. Open-world systems require continuing collective assurance rather than a single complementary expert.
-
-#columns(2, gutter: 6mm)[
 
 = Case assessments
 
@@ -173,42 +162,46 @@ These measures can improve tractability and assurance, but they do not remove th
 
 = What determines agentic tractability
 
-The complexity regimes explain why the engineering value of agent assistance depends less on nominal project difficulty than on the structure of the decision and feedback space. Keel and Hull are difficult systems, but their contract-compositional boundaries make many changes locally decidable. Sail raises the integration burden because model, representation, backend, phase, and memory dimensions form a support cross-product. Ralph crosses into an emergent-outcome regime on harder models, where local improvements weakly predict whole-solver behavior and feedback is delayed and noisy.
+The complexity regimes suggest that the engineering value of agent assistance depends less on nominal project difficulty than on the scope and coupling of engineering decisions and the quality and latency of feedback. Keel and Hull are difficult systems, but their explicit contracts and compositional boundaries make many changes locally decidable. Sail raises the integration burden because model, representation, backend, phase, and memory dimensions form a support cross-product. On harder models, Ralph enters an emergent-outcome regime in which local improvements weakly predict whole-solver behavior and feedback is delayed and noisy.
 
-Decomposition, invariants, and feedback are coupled. Decomposition determines where an invariant can be stated; the invariant determines what a test can observe; feedback reveals whether the decomposition was real or merely convenient. In Sail, separating architecture rules, quantization, placement, and token behavior makes a mismatch easier to attribute. In Ralph, a factorization routine may meet residual checks and a cut may be valid while the combined solver still deteriorates. Local guarantees remain necessary but are farther from the criterion of success.
+Agent assistance can reduce the implementation-skill bottleneck without necessarily reducing the systems-engineering bottleneck. Broader access to code generation therefore does not imply broader access to the judgment required to engineer reliable complex systems. The systems-engineering expertise that remains necessary includes selecting sound decompositions, identifying consequential invariants, distinguishing representative evidence from local proxies, and recognizing when further implementation is counterproductive.
 
-Architectural judgment is the ability to choose boundaries and constraints under incomplete information. It supports agentic work by reducing the search space, stating negative requirements, selecting reference behavior, and recognizing when a locally attractive solution harms global simplicity. The productive loop is iterative: the engineer supplies a frame, the agent explores implementations, tests return evidence, and the frame is revised when evidence contradicts it.
+Decomposition, invariants, and feedback are coupled. Decomposition determines where invariants can be stated; invariants determine what tests must observe; and feedback indicates whether the resulting boundaries provide meaningful isolation or merely organizational convenience. In Sail, separating architecture rules, quantization, placement, and token behavior makes a mismatch easier to attribute. In Ralph, a factorization routine may pass residual checks, or a cut may be mathematically valid, even while whole-solver behavior deteriorates. In such emergent systems, local guarantees remain necessary, but they provide weaker evidence of system-level success.
 
-Judgment is also bounded. Generated changes consume review attention and can create verification debt faster than an engineer can retire it. Human supervisors can choose an elegant but wrong decomposition, preserve obsolete assumptions, or overfit tests. Agreement among similar coding agents is not independent evidence. Architectural judgment can demand token parity, authority confinement, or numerical telemetry; it cannot establish those properties without representative measurements.
+Architectural judgment is the ability to choose boundaries and constraints under incomplete information. It supports agentic work by narrowing the search space, specifying forbidden behavior, selecting reference behavior, and recognizing when a locally attractive solution undermines system-wide simplicity. A productive loop proceeds iteratively: the engineer defines the frame, the agent explores implementations, tests produce evidence, and the frame is revised when that evidence contradicts its assumptions.
 
-Time adds a further risk. Early boundaries are hypotheses and should remain cheap to revise. Coding agents rapidly create downstream consumers, making a weak abstraction expensive to remove. This is premature architectural hardening: implementation throughput converts uncertainty into dependency before the contracts and feedback regime are stable. Delaying breadth can therefore increase total progress.
+The cases suggest that coding systems can extend an implementation more readily than they can recover the architectural decisions and validation logic that shaped it. Repository contents may preserve implementation artifacts, design rationale, validation evidence, and even rejected alternatives, but a coding system may not reconstruct them as a coherent decision trajectory. Under these conditions, more capable coding systems may amplify a systems expert's impact by allowing that expert to direct substantially greater implementation throughput. This creates a potential asymmetry: implementation throughput may expand faster than the expertise available to evaluate whole-system quality. This yields a testable prediction: as coding agents improve, the productivity differential associated with systems-engineering expertise may initially widen rather than narrow.
 
-Alternative explanations remain plausible. The cases differ in maturity, expert attention, domain knowledge, reference implementations, and success criteria. Future agents may reason better about long-range interaction. Consequently, the cases do not demonstrate that decomposition caused one outcome and emergence caused another. They support the narrower claim that current agentic coding is more tractable when correctness is locally decidable, invariants are enforceable, and feedback is dense.
+Architectural judgment is itself bounded. A high volume of generated changes consumes review attention and can accumulate verification debt faster than an engineer can retire it. Human supervisors may choose an elegant but incorrect decomposition, preserve obsolete assumptions, or overfit validation to known cases. Agreement among coding agents that share models, context, or validation assumptions should not be treated as independent evidence. Architectural judgment can require token parity, authority confinement, or numerical telemetry, but it cannot establish them without representative validation evidence.
+
+Implementation speed introduces a further risk. Early boundaries are hypotheses and should remain cheap to revise. Coding agents can rapidly create downstream consumers of an immature abstraction, increasing the cost of revising or removing it. This is premature architectural hardening: implementation throughput converts uncertainty into dependency before the contracts and feedback regime are stable. Temporarily delaying breadth can therefore increase long-run engineering progress by reducing later rework.
+
+Alternative explanations remain plausible. The cases differ in maturity, expert attention, domain knowledge, reference implementations, and success criteria. Future coding agents may reason more effectively about long-range interactions. Consequently, the cases do not establish that architectural decomposition caused the more favorable outcomes or that emergent coupling caused the less favorable ones. They support the narrower claim that engineering work with current coding agents is more tractable when correctness is locally decidable, invariants are enforceable, and system-level feedback is timely and representative.
 
 = Engineering implications
 
-The practical response is not to reduce use of coding agents, but to redirect scarce attention. Before increasing implementation throughput, establish the decomposition, write dependency constraints, state lifecycle and ownership rules, and define end-to-end acceptance tests. Treat generated code as a hypothesis whose cost includes review, integration, and long-term explanation.
+The practical response is not simply to reduce the use of coding agents, but to direct scarce engineering attention toward architecture and validation. Before increasing implementation throughput, define a provisional decomposition, specify dependency constraints and lifecycle and ownership rules, and establish end-to-end acceptance tests. Treat each generated change as a hypothesis to be tested, and account for review, integration, maintenance, and future explanation as part of its cost.
 
-Maintain an architecture ledger that records responsibility boundaries, forbidden dependencies, invariant ownership, and deliberate scope exclusions. Prefer interfaces that expose semantic operations rather than backend accidents. Require every optimization to name its reference path, fallback behavior, affected execution phase, and validation gate. When feedback is sparse, invest first in observability and benchmark design. If representative feedback cannot be made affordable, narrow the supported problem.
+Maintain an architecture ledger that records responsibility boundaries, forbidden dependencies, invariant ownership, and deliberate scope exclusions. Prefer interfaces that expose semantic operations rather than incidental backend details. Require each optimization proposal to identify its reference path, fallback behavior, affected execution phases, and validation gates. When feedback is sparse, delayed, or difficult to attribute, invest first in observability and representative benchmark design. If representative feedback cannot be obtained at acceptable cost, narrow the supported scope.
 
-The framework also suggests a stopping rule. If added code increases the number of cross-component assumptions faster than tests and contracts make those assumptions visible, implementation throughput is harming expected quality. At that point the rational action is consolidation, deletion, or scope reduction, even when generation itself is inexpensive.
+The framework also suggests a stopping rule. If implementation creates cross-component assumptions faster than contracts and tests can expose and validate them, additional throughput is increasing verification debt rather than engineering value. At that point, the appropriate response is to pause expansion and consolidate or delete code, or reduce scope, even when generating more code is inexpensive.
 
 = Threats to validity
 
-The cases were selected from one practitioner's work and differ in maturity, domain, and success criteria. Repository structure is observable, but causal attribution to AI assistance or architectural choices is interpretive. No counterfactual versions developed without agents exist. The proposed regimes are analytical categories rather than measured complexity classes, and placement of the four projects is interpretive. The Ralph table reports selected repository diagnostics, not a new or comprehensive benchmark; it cannot establish general performance across LP and MIP workloads. Statements about Sail describe intended scope, not completed performance. Public documentation may also encode lessons learned after implementation and therefore make the architecture appear more deliberate in retrospect.
+The four cases come from a single practitioner's work and differ in maturity, domain, and success criteria. The repositories provide observable artifacts and records, but attributing project outcomes to AI assistance or particular architectural choices remains interpretive. No matched versions of these projects developed without coding agents exist. The proposed regimes are analytical categories rather than measured complexity classes, and assigning the four projects to them depends on qualitative judgment. The Ralph table summarizes selected repository diagnostics rather than a representative benchmark, so it cannot establish performance across LP and MIP workloads generally. Claims about Sail's proposed successor architecture describe intended scope rather than demonstrated performance. Documentation written or revised after implementation may incorporate lessons learned later, making the architecture appear more deliberate from the outset than it was.
 
-Future evaluation should compare tasks under different architectural specifications, measure review and rework rather than generated volume alone, and vary feedback latency and coverage. Useful outcomes would include defect escape, invariant violations, cross-module change breadth, performance regressions, and time to diagnose system-level failures.
+Future evaluations should compare matched tasks under different architectural specifications, measure review and rework alongside generated volume, and vary feedback latency and coverage. They should also vary the systems-engineering expertise available to direct and evaluate agents, testing whether improved coding capability widens or narrows the resulting productivity differences. Useful outcome measures include escaped defects, invariant violations, cross-module change breadth, performance regressions, and time to diagnose system-level failures.
 
 = Conclusion
 
-Current coding agents substantially expand the amount of implementation one engineer can attempt. These cases are consistent with the hypothesis that this capacity is most valuable when decomposition converts global obligations into locally decidable tasks, invariants are explicit and enforceable, and system-level feedback is rapid and representative. Keel supplies the strongest retrospective evidence. Hull is converging under similar principles. Sail tests the framework prospectively, while Ralph shows both the ability to reach optimal solutions on smaller models and the failure of local progress to guarantee convergence on larger, harder ones.
+In these cases, current coding agents substantially expanded the amount of implementation one engineer could attempt. The cases are consistent with the hypothesis that this added implementation capacity is most valuable when decomposition converts global obligations into locally decidable tasks, invariants are explicit and enforceable, and system-level feedback is timely and representative. Among the cases, Keel provides the strongest retrospective evidence for this hypothesis. Hull offers less mature evidence from an architecture converging under similar principles. Sail provides a prospective test of the framework, while Ralph illustrates both successful optimization on smaller models and the failure of local improvements to ensure reliable convergence on larger, harder ones.
 
-AI therefore amplifies the architecture supplied to it. Architectural judgment improves that architecture by selecting boundaries, exclusions, invariants, and evidence. Yet supervision has limited bandwidth, experts can be wrong, and judgment cannot substitute for empirical feedback in emergent systems. The limiting resource in large AI-assisted software projects is shifting from code production toward coherent decomposition, architectural judgment, and effective validation. Code is becoming cheap. Complexity is not.
+Coding agents therefore tend to amplify the architecture and constraints supplied to them. Architectural judgment supplies this structure by selecting boundaries, exclusions, invariants, and validation requirements. Yet supervisory attention is finite, expert judgments can be mistaken, and architectural judgment cannot substitute for empirical feedback in emergent systems. The practical dividing line for agentic tractability is not whether coding agents can implement components, but whether component-level correctness composes into observable whole-system quality. The cases therefore suggest that the limiting constraints in large AI-assisted software projects may shift away from code production and toward coherent decomposition, architectural judgment, and effective validation. Generating code is becoming cheap. Managing complexity is not.
 
 = References
 
-#set par(hanging-indent: 9pt, leading: 0.42em)
-#text(size: 7.7pt)[
+#set par(hanging-indent: 8pt, leading: 0.15em)
+#text(size: 6.3pt)[
 [1] artalis.io. "Keel README: architecture and backend axes." #link("https://github.com/artalis-io/keel/blob/main/README.md")[github.com/artalis-io/keel/blob/main/README.md], accessed 2026-09-02.\
 [2] artalis.io. "Keel stream transport contract." #link("https://github.com/artalis-io/keel/blob/main/docs/contracts/stream.md")[github.com/artalis-io/keel/blob/main/docs/contracts/stream.md], accessed 2026-09-02.\
 [3] artalis.io. "Hull architecture." #link("https://github.com/artalis-io/hull/blob/main/docs/architecture.md")[github.com/artalis-io/hull/blob/main/docs/architecture.md], accessed 2026-09-02.\
@@ -220,6 +213,8 @@ AI therefore amplifies the architecture supplied to it. Architectural judgment i
 [9] J. Chen, Y. Liang, and Z. Liu. "DFlash: Block Diffusion for Flash Speculative Decoding." #link("https://arxiv.org/abs/2602.06036")[arXiv:2602.06036], 2026.\
 [10] A. Zandieh et al. "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate." #link("https://arxiv.org/abs/2504.19874")[arXiv:2504.19874], 2025.\
 [11] C. E. Jimenez et al. "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?" #link("https://arxiv.org/abs/2310.06770")[arXiv:2310.06770], 2023.\
-[12] METR. "Measuring AI Ability to Complete Long Software Tasks." #link("https://proceedings.neurips.cc/paper_files/paper/2025/file/85069585133c4c168c865e65d72e9775-Paper-Conference.pdf")[NeurIPS 2025], 2025.
-]
+[12] METR. "Measuring AI Ability to Complete Long Software Tasks." #link("https://proceedings.neurips.cc/paper_files/paper/2025/file/85069585133c4c168c865e65d72e9775-Paper-Conference.pdf")[NeurIPS 2025], 2025.\
+[13] S. Asthana et al. "Runtime-Structured Task Decomposition for Agentic Coding Systems." #link("https://arxiv.org/abs/2605.15425")[arXiv:2605.15425], 2026.\
+[14] T. Santilli, F. Daghero, and M. Tourchi Moghaddam. "SAKE: Software Architectural Knowledge Evaluation Benchmark for Large Language Models." #link("https://arxiv.org/abs/2606.29520")[arXiv:2606.29520], 2026.\
+[15] Y. Zhu, N. Tsantalis, and P. C. Rigby. "AI-Generated Smells: An Analysis of Code and Architecture in LLM and Agent-Driven Development." #link("https://arxiv.org/abs/2605.02741")[arXiv:2605.02741], 2026.
 ]
