@@ -96,3 +96,65 @@ One factual caveat not verifiable from the text alone: the forward-dated tooling
 (Opus 4.8, GPT-5.6, Qwen3.8, arXiv IDs in the 2602/2606 range) are internally consistent with the
 paper's 2026 setting, but any citation to a not-yet-existing or mis-numbered preprint will be
 caught in review — worth a verification pass before submission.
+
+---
+
+# Part 2 — Re-review of Section IV (*What determines agentic tractability*)
+
+Focused re-review after commit `2c2e9f7` ("Add testable predictions").
+
+## What changed
+
+The lone "productivity differential may widen" prediction that previously sat mid-paragraph has
+been pulled out and consolidated into a new **§IV-E "Testable predictions"** subsection listing
+five predictions; the preceding paragraph now ends cleanly on the asymmetry statement.
+
+This is a solid improvement, for a specific reason: the five predictions are expressed in terms of
+the three operationalization dimensions introduced in §II-A (change-context breadth, validation
+locality, compositional reliability). That closes the chain a hypothesis paper needs —
+*framework → measurable constructs → falsifiable predictions* — which is what makes it
+scientifically respectable rather than merely evocative. Predictions #1, #2, and #5 are crisp and
+directional.
+
+## Fair critique of the current Section IV
+
+Four genuine issues, ordered by how actionable they are:
+
+1. **Structural: the closing "Alternative explanations" paragraph now falls *under* the "Testable
+   predictions" subsection.** After the `== Testable predictions` heading, the final paragraph
+   ("Alternative explanations remain plausible… the narrower claim…") belongs semantically to that
+   subsection until the next `=`. So a section-level humility caveat is rhetorically trapped as the
+   tail of a subsection titled "Testable predictions," which reads oddly. **Recommended fix:** move
+   that paragraph to *before* `== Testable predictions`. This un-nests the caveat and lets §IV end
+   on the five falsifiable predictions — a stronger close for a hypothesis paper than ending on
+   hedging. This is the one change worth making.
+
+2. **Prediction #3 (verification debt) lacks a proposed proxy, unlike #1/#2.** Predictions 1 and 2
+   inherit measurable constructs from §II-A; prediction 3 asserts "verification debt should
+   increase when…" but verification debt has only a conceptual definition — no suggested way to
+   *observe* it. A reviewer will ask how the increase would be detected. One clause proposing a
+   proxy (e.g., unresolved cross-component assumptions per unit of merged change, or growth in
+   system-level failures attributable to previously-accepted local changes) would bring it up to
+   the standard of its siblings.
+
+3. **Prediction #4 is the softest and the only one untethered from the operationalization
+   dimensions.** "systems-engineering expertise may become more strongly leveraged, initially
+   widening… productivity differences" is double-hedged ("may," "initially") and "more strongly
+   leveraged" is not directly measurable the way the others are. Defensible to include, but it is
+   the weakest link in an otherwise sharp list — worth tightening the measurable claim or
+   acknowledging it as the most speculative.
+
+4. **Mild overlap between §IV-E and §VI.** Future-comparative-evaluation content now lives in two
+   places: the predictions here and the "future evaluations should compare matched tasks… vary
+   feedback latency and coverage" list in Threats to Validity. They don't contradict, but they are
+   stated independently. A single cross-reference ("these predictions could be tested via the
+   evaluation designs in §VI") would tie them together and avoid the reader feeling the paper says
+   the same forward-looking thing twice.
+
+## Verdict on Section IV
+
+The section does its job as the synthesis: it abstracts cleanly from the four cases, keeps its
+causal claims appropriately narrow (the closing paragraph explicitly retreats to "the narrower
+claim"), and the new predictions subsection materially strengthens it. Nothing here is broken or
+incoherent. Of the four points, only #1 (reorder the closing paragraph) is worth doing before
+submission; #2 is a real but minor gap; #3 and #4 are polish. The logical arc is intact.
