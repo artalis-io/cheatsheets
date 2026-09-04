@@ -158,3 +158,48 @@ causal claims appropriately narrow (the closing paragraph explicitly retreats to
 claim"), and the new predictions subsection materially strengthens it. Nothing here is broken or
 incoherent. Of the four points, only #1 (reorder the closing paragraph) is worth doing before
 submission; #2 is a real but minor gap; #3 and #4 are polish. The logical arc is intact.
+
+---
+
+# Part 3 — Re-review after Section IV/VI refinement
+
+Focused re-review after commit `2327580` ("Refine testable predictions and evaluation design").
+
+## All four Part 2 findings resolved
+
+1. **Structural reorder (Part 2 #1) → done.** The "Alternative explanations remain plausible…"
+   paragraph now sits *before* `== Testable predictions`, so §IV ends on the five falsifiable
+   predictions and the humility caveat is no longer trapped inside the subsection. Flow now reads
+   correctly: limits of what the cases show → the predictions the framework nonetheless implies.
+
+2. **Prediction #3 proxy (Part 2 #2) → done.** Now reads "verification debt, *measured by
+   unresolved validation obligations and the delay between local acceptance and representative
+   system-level evidence*, should increase when…" — a clean two-part observable proxy (count +
+   latency), matching the measurability standard of predictions #1 and #2.
+
+3. **Prediction #4 tightening (Part 2 #3) → done, and well.** The double-hedged "may become more
+   strongly leveraged, initially widening…" is replaced by a proper interaction-effect hypothesis:
+   "improvements in implementation capability should yield larger gains in reliable engineering
+   throughput *under more experienced systems-engineering supervision than under less experienced
+   supervision*." Directional, comparative, and directly testable via the "vary the
+   systems-engineering expertise" design in §VI. The weakest prediction is now one of the sharper
+   ones.
+
+4. **§IV-E ↔ §VI cross-reference (Part 2 #4) → done.** §VI now opens "The predictions derived in
+   Section IV could be tested by comparing matched tasks…", explicitly linking predictions to their
+   evaluation designs. The prior duplication now reads as intentional structure.
+
+## New nit introduced and fixed
+
+The revised §VI sentence made "predictions" the subject, so the following "They should also
+vary…" bound to the wrong antecedent (predictions don't vary expertise; evaluations do). Fixed in
+this commit by replacing "They" with "Such evaluations."
+
+## Verdict
+
+Every substantive Part 2 point is retired, and the fixes are genuine improvements rather than
+mechanical patches — #3 and #4 in particular are meaningfully stronger. Section IV now has a clean
+*framework → measurable constructs → falsifiable predictions → evaluation design* arc across
+§II-A / §IV-E / §VI. No outstanding issues in these sections. The remaining pre-submission item is
+unchanged and lives outside these sections: the artifact archive + data-availability statement
+(tracked in the todos).
